@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+{% load socialaccount %}
+
+<div class="text-center space-y-10">
+ 
+  <h1 class="text-6xl font-extrabold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent animate-pulse">
+    Welcome to ProjLink
+  </h1>
+  <p class="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto">
+    The modern platform that connects <span class="font-semibold text-blue-600 dark:text-blue-400">Developers</span> with 
+    <span class="font-semibold text-purple-600 dark:text-purple-400">Project Owners</span> 🚀
+  </p>
+
+
+  <div class="bg-white dark:bg-gray-800 shadow-2xl rounded-2xl p-10 w-full max-w-4xl mx-auto transform transition duration-500 hover:scale-105">
+    {% if user.is_authenticated %}
+      <p class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-6">Welcome back, {{ user.username }} 👋</p>
+      {% if request.session.selected_role == 'developer' %}
+        <a href="{% url 'developer_profile' %}" class="block w-full py-3 mb-3 bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white rounded-xl font-medium transition">Your Developer Profile</a>
+      {% elif request.session.selected_role == 'owner' %}
+        <a href="{% url 'owner_profile' %}" class="block w-full py-3 mb-3 bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white rounded-xl font-medium transition">Your Project Owner Profile</a>
+      {% else %}
+        <a href="{% url 'developer_profile' %}" class="block w-full py-3 mb-3 bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white rounded-xl font-medium transition">Your Profile</a>
+      {% endif %}
+      <a href="{% url 'logout' %}" class="block w-full py-3 bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white rounded-xl font-medium transition">Logout</a>
+    {% else %}
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <!-- Developer Card -->
+        <div class="relative">
+          <div id="developerCard" class="border-2 border-blue-200 dark:border-blue-700 rounded-xl p-6 text-center cursor-pointer transition-all hover:border-blue-500 dark:hover:border-blue-400 hover:scale-105 bg-blue-50 dark:bg-blue-900/20" onclick="selectRole('developer')">
+            <div class="w-16 h-20 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg class="w-8 h-20 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Developer</h3>
+            <p class="text-gray-600 dark:text-gray-300">Find amazing projects and showcase your skills</p>
+          </div>
+          
+          <!-- Developer Social Login Buttons -->
+          <div id="developerSocial" class="mt-4 space-y-3 hidden">
+            <a href="{% provider_login_url 'google' %}?next={% url 'social_auth_callback' %}%3Frole%3Ddeveloper"
+               class="block w-full py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl font-semibold shadow-lg transition flex items-center justify-center space-x-2">
+               <svg class="w-5 h-5" viewBox="0 0 24 24">
+                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                 <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                 <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                 <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+               </svg>
+               <span>Continue with Google</span>
+            </a>
+            
+            <a href="{% provider_login_url 'facebook' %}?next={% url 'social_auth_callback' %}?role=developer"
+   class="block w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-semibold shadow-lg transition flex items-center justify-center space-x-2">
+   <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+       <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+   </svg>
+   <span>Continue with Facebook</span>
+</a>
+
+            
+            <a href="#" onclick="showComingSoon()"
+               class="block w-full py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl font-semibold shadow-lg transition flex items-center justify-center space-x-2">
+               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                 <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+               </svg>
+               <span>Continue with LinkedIn</span>
+            </a>
+            
+            <a href="#" onclick="showComingSoon()"
+               class="block w-full py-3 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white rounded-xl font-semibold shadow-lg transition flex items-center justify-center space-x-2">
+               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                 <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-.2-6.782-2.618-6.979-6.98-.058-1.281-.072-1.689-.072-4.948zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+               </svg>
+               <span>Continue with Instagram</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Project Owner Card -->
+        <div class="relative">
+          <div id="ownerCard" class="border-2 border-purple-200 dark:border-purple-700 rounded-xl p-6 text-center cursor-pointer transition-all hover:border-purple-500 dark:hover:border-purple-400 hover:scale-105 bg-purple-50 dark:bg-purple-900/20" onclick="selectRole('owner')">
+            <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg class="w-8 h-8 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Project Owner</h3>
+            <p class="text-gray-600 dark:text-gray-300">Connect with talented developers for your projects</p>
+          </div>
+          
+          <!-- Project Owner Social Login Buttons -->
+          <div id="ownerSocial" class="mt-4 space-y-3 hidden">
+            <a href="{% provider_login_url 'google' %}?next={% url 'social_auth_callback' %}%3Frole%3Downer"
+               class="block w-full py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl font-semibold shadow-lg transition flex items-center justify-center space-x-2">
+               <svg class="w-5 h-5" viewBox="0 0 24 24">
+                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                 <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                 <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                 <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+               </svg>
+               <span>Continue with Google</span>
+            </a>
+            
+           <a href="{% provider_login_url 'facebook' %}?next={% url 'social_auth_callback' %}?role=owner"
+   class="block w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-semibold shadow-lg transition flex items-center justify-center space-x-2">
+   <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+       <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+   </svg>
+   <span>Continue with Facebook</span>
+</a>
+
+            <a href="#" onclick="showComingSoon()"
+               class="block w-full py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl font-semibold shadow-lg transition flex items-center justify-center space-x-2">
+               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                 <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+               </svg>
+               <span>Continue with LinkedIn</span>
+            </a>
+            
+            <a href="#" onclick="showComingSoon()"
+               class="block w-full py-3 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white rounded-xl font-semibold shadow-lg transition flex items-center justify-center space-x-2">
+               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                 <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-.2-6.782-2.618-6.979-6.98-.058-1.281-.072-1.689-.072-4.948zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+               </svg>
+               <span>Continue with Instagram</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Error Modal -->
+<div id="errorModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+  <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-md mx-4 transform transition-all">
+    <div class="text-center">
+      <div class="w-16 h-16 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2" id="errorTitle">Error</h3>
+      <p class="text-gray-600 dark:text-gray-300 mb-6" id="errorMessage">Something went wrong.</p>
+      <div class="flex space-x-3">
+        <button onclick="hideErrorModal()" class="flex-1 py-2 px-4 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+          Cancel
+        </button>
+        <button onclick="redirectToPage()" class="flex-1 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" id="redirectBtn">
+          Continue
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let redirectUrl = '';
+let selectedRole = '';
+
+function selectRole(role) {
+  selectedRole = role;
+  
+  // Hide all social login sections
+  document.getElementById('developerSocial').classList.add('hidden');
+  document.getElementById('ownerSocial').classList.add('hidden');
+  
+  // Reset card styles
+  document.getElementById('developerCard').classList.remove('border-blue-500', 'dark:border-blue-400', 'bg-blue-100', 'dark:bg-blue-900/40');
+  document.getElementById('ownerCard').classList.remove('border-purple-500', 'dark:border-purple-400', 'bg-purple-100', 'dark:bg-purple-900/40');
+  
+  // Show selected role's social login buttons
+  if (role === 'developer') {
+    document.getElementById('developerSocial').classList.remove('hidden');
+    document.getElementById('developerCard').classList.add('border-blue-500', 'dark:border-blue-400', 'bg-blue-100', 'dark:bg-blue-900/40');
+  } else if (role === 'owner') {
+    document.getElementById('ownerSocial').classList.remove('hidden');
+    document.getElementById('ownerCard').classList.add('border-purple-500', 'dark:border-purple-400', 'bg-purple-100', 'dark:bg-purple-900/40');
+  }
+}
+
+function showErrorModal(title, message, redirectTo = null) {
+  document.getElementById('errorTitle').textContent = title;
+  document.getElementById('errorMessage').textContent = message;
+  document.getElementById('errorModal').classList.remove('hidden');
+  document.getElementById('errorModal').classList.add('flex');
+  
+  if (redirectTo) {
+    redirectUrl = redirectTo;
+    document.getElementById('redirectBtn').textContent = 'Go to ' + (redirectTo === 'login' ? 'Login' : 'Signup');
+  } else {
+    redirectUrl = '';
+    document.getElementById('redirectBtn').style.display = 'none';
+  }
+}
+
+function hideErrorModal() {
+  document.getElementById('errorModal').classList.add('hidden');
+  document.getElementById('errorModal').classList.remove('flex');
+}
+
+function redirectToPage() {
+  if (redirectUrl) {
+    window.location.href = '/' + redirectUrl + '/';
+  }
+  hideErrorModal();
+}
+
+function showComingSoon() {
+  showErrorModal('Coming Soon', 'This feature will be available soon!');
+}
+</script>
+{% endblock %}

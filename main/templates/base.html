@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}ProjLink{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen flex flex-col transition-colors duration-500">
+
+  <!-- Navbar -->
+  <nav class="bg-white dark:bg-gray-800 shadow-md p-4 flex justify-between items-center sticky top-0 z-50">
+    <a href="/" class="text-2xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">ProjLink</a>
+    <div class="flex items-center space-x-4">
+      <button id="theme-toggle" class="px-3 py-1 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:scale-110 transition">🌙 / ☀️</button>
+      
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <main class="flex-grow flex items-center justify-center p-6">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 dark:bg-gray-800 text-center text-gray-500 dark:text-gray-400 py-4 transition">
+    &copy; {{ now|date:"Y" }} ProjLink. All rights reserved.
+  </footer>
+
+  <script>
+    const toggleBtn = document.getElementById('theme-toggle');
+    toggleBtn.addEventListener('click', ()=>{document.documentElement.classList.toggle('dark');});
+  </script>
+</body>
+</html>
